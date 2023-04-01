@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
@@ -94,7 +95,7 @@ namespace EControl.Tools.Helper
         }
 
         /// <summary>
-        /// 输出所有父级 <see cref="Console.WriteLine"/>
+        /// 输出所有父级 <see cref="Debug.WriteLine"/>
         /// </summary>
         public static void PingParent(DependencyObject d)
         {
@@ -102,14 +103,14 @@ namespace EControl.Tools.Helper
 
             while (parent != null)
             {
-                Console.WriteLine(parent);
+                Debug.WriteLine(parent);
                 parent = System.Windows.Media.VisualTreeHelper.GetParent(parent);
             }
         }
 
 
         /// <summary>
-        /// 输出所有子级 <see cref="Console.WriteLine"/>
+        /// 输出所有子级 <see cref="Debug.WriteLine"/>
         /// </summary>
         public static void PingTopChild(DependencyObject d)
         {
@@ -117,7 +118,7 @@ namespace EControl.Tools.Helper
             {
                 var child = VisualTreeHelper.GetChild(d, i);
 
-                Console.WriteLine(child);
+                Debug.WriteLine(child);
             }
         }
     }

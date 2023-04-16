@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,46 +25,110 @@ namespace EControl.Controls
 
         public ItemsControl? GetItemsControl => EControl.Tools.Helper.VisualHelper.GetParent<ItemsControl>(this);
 
+        /// <summary>
+        /// 拖拽方向
+        /// </summary>
         public EControl.Data.DragDirection DragDirection
         {
             get { return (EControl.Data.DragDirection)GetValue(DragDirectionProperty); }
             set { SetValue(DragDirectionProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for  DragDirection.  This enables animation, styling, binding, etc...
+        /// <summary>
+        /// 拖拽方向
+        /// </summary>
         public static readonly DependencyProperty DragDirectionProperty =
             DependencyProperty.Register("DragDirection", typeof(EControl.Data.DragDirection), typeof(ItemsControlDragItemContainer), new PropertyMetadata(EControl.Data.DragDirection.TopAndBottom));
 
-        private Point DragFirstPoint;
-        protected override void OnPreviewMouseDown(MouseButtonEventArgs e) => DragFirstPoint = e.GetPosition(this);
+        /// <summary>
+        /// 第一次鼠标按下的坐标（变量）
+        /// </summary>
+        private Point? DragFirstPoint;
+        /// <summary>
+        /// 记录第一次鼠标按下的坐标
+        /// </summary>
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            DragFirstPoint = e.GetPosition(this);
+            base.OnPreviewMouseDown(e);
+        }
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && DragFirstPoint != null)
             {
-                if (Math.Abs(e.GetPosition(this).X - DragFirstPoint.X) > 10 || Math.Abs(e.GetPosition(this).Y - DragFirstPoint.Y) > 10)
+                // 获取按下鼠标后的偏移量，大于10则进行拖拽操作
+                if (Math.Abs(e.GetPosition(this).X - DragFirstPoint.Value.X) > 10 || Math.Abs(e.GetPosition(this).Y - DragFirstPoint.Value.Y) > 10)
                 {
+                    // 获取当前鼠标按住的对象上下文
                     var from = EControl.Tools.Helper.DragMoveSortHelper.GetDataContext(this);
+                    // 开始拖拽
                     DragDrop.DoDragDrop(GetItemsControl, from, DragDropEffects.Move);
                 }
             }
+            base.OnPreviewMouseMove(e);
+        }
+
+        protected override void OnPreviewDragEnter(DragEventArgs e)
+        {
+            var point = e.GetPosition(this);
+
+            if (DragDirection == Data.DragDirection.TopAndBottom)
+            {
+                // this.Height -= 3;
+                if (point.Y > this.ActualHeight / 2)
+                {
+                    this.BorderThickness = new Thickness(0, 0, 0, 3);
+                }
+                else
+                {
+                    this.BorderThickness = new Thickness(0, 3, 0, 0);
+                }
+            }
+            else
+            {
+                // this.Width -= 3;
+                if (point.X > this.ActualWidth / 2)
+                {
+                    this.BorderThickness = new Thickness(0, 0, 3, 0);
+                }
+                else
+                {
+                    this.BorderThickness = new Thickness(3, 0, 0, 0);
+                }
+            }
+            base.OnPreviewDragEnter(e);
         }
 
         protected override void OnPreviewDragOver(DragEventArgs e)
         {
-            var point = e.GetPosition(this);
-            this.BorderThickness = (DragDirection == Data.DragDirection.TopAndBottom) ? (point.Y > this.ActualHeight / 2) ? new Thickness(0, 0, 0, 3) : new Thickness(0, 3, 0, 0) :
-                (point.X > this.ActualWidth / 2) ? new Thickness(0, 0, 3, 0) : new Thickness(3, 0, 0, 0);
+            base.OnPreviewDragOver(e);
         }
 
-        protected override void OnPreviewDragLeave(DragEventArgs e) => this.BorderThickness = new Thickness(0, 0, 0, 0);
-
-        protected override void OnPreviewDrop(DragEventArgs e)
+        void ReStore()
         {
             this.BorderThickness = new Thickness(0, 0, 0, 0);
+        }
+
+        /// <summary>
+        /// 离开拖拽范围
+        /// </summary>
+        protected override void OnPreviewDragLeave(DragEventArgs e)
+        {
+            ReStore();
+            base.OnPreviewDragLeave(e);
+        }
+
+        /// <summary>
+        /// 拖拽完成
+        /// </summary>
+        protected override void OnPreviewDrop(DragEventArgs e)
+        {
+            ReStore();
             if (GetItemsControl?.ItemsSource != null)
             {
                 EControl.Tools.Helper.DragMoveSortHelper.ChangeItemIndex((System.Collections.IList)GetItemsControl!.ItemsSource, this, e, DragDirection);
             }
+            base.OnPreviewDrop(e);
         }
     }
 }

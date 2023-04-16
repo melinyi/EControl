@@ -55,7 +55,7 @@ namespace EControl.Controls.TabFrame
         /// </summary>
         public bool IsCurrentPage<T>() => this.SelectedItem is T;
 
-        public void Navigate<T>(object param)
+        public void Navigate<T>(object? param)
         {
             var pageItem = Items.FindPageFirstOrNull<T>();
 
@@ -75,7 +75,7 @@ namespace EControl.Controls.TabFrame
                     HistoryList = HistoryList.Take(HistoryIndex + 1).ToList();
                 }
 
-                HistoryList.Add(new KeyValuePair<string, object>(page.Name, param));
+                HistoryList.Add(new KeyValuePair<string, object?>(page.Name, param));
                 HistoryIndex = HistoryList.Count - 1;
 
                 SetPage(page, param);
@@ -100,10 +100,10 @@ namespace EControl.Controls.TabFrame
         //    }
         //}
 
-        private void SetPage(ITabPage page, object param)
+        private void SetPage(ITabPage page, object? param)
         {
             SelectedItem = page;
-            UpdateUI(new KeyValuePair<string, object>(page.Name, param));
+            UpdateUI(new KeyValuePair<string, object?>(page.Name, param));
             //执行页面参数
             page.NavigateContinueWithInvoke?.Invoke(param);
         }
@@ -114,9 +114,9 @@ namespace EControl.Controls.TabFrame
         /// <summary>
         /// Key Is nameof Token , Value object Is Param
         /// </summary>
-        private List<KeyValuePair<string, object>> HistoryList { get; set; } = new List<KeyValuePair<string, object>>();
+        private List<KeyValuePair<string, object?>> HistoryList { get; set; } = new List<KeyValuePair<string, object?>>();
 
-        private KeyValuePair<string, object> CurrentPageCode;
+        private KeyValuePair<string, object?> CurrentPageCode;
         private int HistoryIndex { get; set; }
 
         public bool CanGoBack => HistoryIndex != 0 && HistoryList.Count > 1 ? true : false;
@@ -151,7 +151,7 @@ namespace EControl.Controls.TabFrame
         }
 
 
-        private void UpdateUI(KeyValuePair<string, object> HistoryItem)
+        private void UpdateUI(KeyValuePair<string, object?> HistoryItem)
         {
             CurrentPageCode = HistoryItem;
             if (GoBackControl != null) SetBackOrForwardControl(GoBackControl, CanGoBack);

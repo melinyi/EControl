@@ -1,6 +1,20 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:hc="https://handyorg.github.io/handycontrol"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/EControl;Component/Style/Icons.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/EControl;Component/Style/Button.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
     <Style TargetType="Path">
-        <Setter Property="Stretch" Value="Uniform"/>       
+        <Setter Property="Stretch" Value="Uniform"/>   
+        <!--引起一些默认控件的图标变形： <Setter Property="Fill" Value="{DynamicResource PrimaryTextBrush}"/>-->       
     </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource ButtonDefault}">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Height" Value="35"/>
+    </Style>
+    
+    <!--引起组件颜色异常<Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBaseStyle}"/>-->
 </ResourceDictionary>

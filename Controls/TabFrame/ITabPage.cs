@@ -12,7 +12,7 @@ namespace EControl.Controls.TabFrame.Interface
         /// <summary>
         /// 跳转页面后的后续操作，参数 object， dynamic亦可
         /// </summary>
-        Action<object> NavigateContinueWithInvoke { get; }
+        Action<object?> NavigateContinueWithInvoke { get; }
 
     }
 }

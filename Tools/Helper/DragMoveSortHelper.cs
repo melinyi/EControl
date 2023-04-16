@@ -13,6 +13,12 @@ namespace EControl.Tools.Helper
 {
     public static class DragMoveSortHelper
     {
+        /// <summary>
+        /// 获取当前鼠标按住的对象上下文
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static object GetDataContext(object sender)
         {
             if (sender is null || !(sender is FrameworkElement))
@@ -31,6 +37,7 @@ namespace EControl.Tools.Helper
         public static void ChangeItemIndex(IList itemSource, object sender, DragEventArgs e, DragDirection dragDirection)
         {
             var from = GetDragData(e);
+            if (itemSource.IndexOf(from) == -1) return;// 不属于这个合集的对象，不进行调换
             var to = GetDataContext(sender);
 
             var element = (FrameworkElement)sender;

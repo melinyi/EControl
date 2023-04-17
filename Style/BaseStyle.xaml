@@ -5,6 +5,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/EControl;Component/Style/Icons.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/EControl;Component/Style/Button.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/EControl;Component/Style/Window.xaml"/>
     </ResourceDictionary.MergedDictionaries>
     
     <Style TargetType="Path">
